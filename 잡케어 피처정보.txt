@@ -1,0 +1,82 @@
+train.csv
+
+ 	d_l_match_yn :  속성 D 대분류 매칭 여부                                ->>>>   boolean
+
+ 	d_m_match_yn :  속성 D 중분류 매칭 여부                                ->>>>   boolean
+
+ 	d_s_match_yn :  속성 D 소분류 매칭 여부                                ->>>>   boolean
+ 
+ 	h_l_match_yn :  속성 H 대분류 매칭 여부                                ->>>>   boolean
+
+ 	h_m_match_yn :  속성 H 중분류 매칭 여부                                ->>>>   boolean
+
+ 	h_s_match_yn :  속성 H 소분류 매칭 여부                                ->>>>   boolean
+
+ 	person_attribute_a :  회원 속성 A                  ->>>> 1 , 2 Int     ->>>  원핫 인코딩 
+
+ 	person_attribute_a_1 :  회원 속성 A 하위 속성 1             ->>  int     ->>> 원핫 인코딩
+
+ 	person_attribute_b :  회원 속성 B                                     ->>  int     ->>> 원핫 인코딩
+
+ 	person_prefer_c :  회원 선호 속성 C                                        ->>  int     ->>> 원핫 인코딩
+
+ 	person_prefer_d_1 :  회원 선호 속성 D 1번                                  ->>  int     ->>> 수가 너무 커서 인코딩 불가
+
+ 	person_prefer_d_2 :  회원 선호 속성 D 2번		->>  int     ->>> 수가 너무 커서 인코딩 불가
+
+ 	person_prefer_d_3 :  회원 선호 속성 D 3번			->>  int     ->>> 수가 너무 커서 인코딩 불가
+	
+ 	person_prefer_e :  회원 선호 속성 E			 ->>  int     ->>> 0~~~ 20 정도 ??? 원핫 하기엔 많음
+
+ 	person_prefer_f :  회원 선호 속성 F				  ->>  int     ->>> 1만 있는듯 ???
+
+ 	person_prefer_g :  회원 선호 속성 G				 ->>  int     ->>> 1만 있는듯 ???
+
+ 	person_prefer_h_1 :  회원 선호 속성 H 1번				 ->>  int     ->>> 수가 너무 커서 인코딩 불가
+
+ 	person_prefer_h_2 :  회원 선호 속성 H 2번				 ->>  int     ->>> 수가 너무 커서 인코딩 불가
+
+ 	person_prefer_h_3 :  회원 선호 속성 H 3번				 ->>  int     ->>> 수가 너무 커서 인코딩 불가
+
+ 	contents_attribute_i :  컨텐츠 속성 I					 ->>  int     ->> 1,2,3 정도?? 원 핫 인코딩 가능
+
+ 	contents_attribute_a :  컨텐츠 속성 A					->>  int     ->> 1,2,3 정도?? 원 핫 인코딩 가능
+
+ 	contents_attribute_j_1 :  컨텐츠 속성 J 하위 속성 1				->>  int     ->> 5 또는 10인듯??  원 핫 인코딩 가능
+
+ 	contents_attribute_j :  컨텐츠 속성 J			->>  int     ->> 1,2 정도?? 원 핫 인코딩 가능
+
+ 	contents_attribute_c :  컨텐츠 속성 C			->> int  1,2,3,4 원 핫 가능
+
+ 	contents_attribute_k :  컨텐츠 속성 K			->> int 1,2 가능
+
+ 	contents_attribute_l :  컨텐츠 속성 L			->>  int     ->>> 수가 너무 커서 인코딩 불가
+
+ 	contents_attribute_d :  컨텐츠 속성 D			->>  int     ->>> 수가 너무 커서 인코딩 불가
+
+ 	contents_attribute_m :  컨텐츠 속성 M				->> int  1,2,3,4, 5 원 핫 가능
+
+ 	contents_attribute_e :  컨텐츠 속성 E		    ->> int 10정도까지?? 원핫하기 애매함
+
+ 	contents_attribute_h :  컨텐츠 속성 H		->>  int     ->>> 수가 너무 커서 인코딩 불가
+
+	person_rn :  사용자번호                                     ->>    사용자 번호 drop 해도 될 듯????
+
+ 	contents_rn :  컨텐츠번호			->>> 뭘 의미하는 거지
+
+	contents_open_dt :  컨텐츠 열람 일시     	->>> 최근 일자 이면 영향도 줘도 될 듯
+
+ 	target :  컨텐츠 사용 여부 (라벨)              ->>>> 라벨링 값  0 or 1 
+
+
+
+
+train test split 
+
+
+
+
+
+
+
+
