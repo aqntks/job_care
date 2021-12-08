@@ -10,6 +10,12 @@ import warnings
 warnings.filterwarnings(action='ignore')
 
 
+def evaluate_macroF1_lgb(truth, predictions):  
+    # this follows the discussion in https://github.com/Microsoft/LightGBM/issues/1483
+    pred_labels = predictions.reshape(len(np.unique(truth)),-1).argmax(axis=0)
+    f1 = f1_score(truth, pred_labels, average='macro')
+    return ('macroF1', f1, True)
+
 # 데이터 로드
 
 train = pd.read_csv('train.csv')      # 총 501951 개   35개 피쳐
@@ -73,8 +79,9 @@ from sklearn.ensemble import VotingClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.neural_network import MLPClassifier
-# from sklearn.svm import SVC
-# from xgboost import XGBClassifier
+from sklearn.svm import SVC
+from xgboost import XGBClassifier
+from lightgbm import LGBMClassifier
 
 # model = DecisionTreeClassifier(max_depth=60)
 # F1Score -> 0.5540630561659227
@@ -85,9 +92,9 @@ from sklearn.neural_network import MLPClassifier
 # model = RandomForestClassifier(n_estimators=300, max_depth=60, n_jobs=-1)
 # F1Score -> 0.6339364303178483
 
-rf_model = RandomForestClassifier(n_estimators=300, max_depth=60, n_jobs=-1)
-mlp_model = MLPClassifier(hidden_layer_sizes=(100,), learning_rate_init=0.01, max_iter=300, random_state=11)
-model = VotingClassifier(estimators=[('RF', rf_model), ('MLP', mlp_model)], voting='soft')
+#rf_model = RandomForestClassifier(n_estimators=300, max_depth=60, n_jobs=-1)
+#mlp_model = MLPClassifier(hidden_layer_sizes=(100,), learning_rate_init=0.01, max_iter=300, random_state=11)
+#model = VotingClassifier(estimators=[('RF', rf_model), ('MLP', mlp_model)], voting='soft')
 # F1Score -> 0.6415912229553477
 
 # model = KNeighborsClassifier(n_neighbors=8)
@@ -106,26 +113,58 @@ model = VotingClassifier(estimators=[('RF', rf_model), ('MLP', mlp_model)], voti
 
 # model = SVC(C=100, gamma=1, random_state=11, probability=True)
 # -> 오래걸림
-# model = XGBClassifier(n_estimators=300, random_state=11)
+# model = XGBClassifier(n_estimators=1000, random_state=11)
+# F1Score -> 0.6444679654051167
+# model = XGBClassifier(n_estimators=400, learning_rate=0.1, max_depth=3, random_state=11)
+# F1Score -> 0.6311277078133634
+
+# model = LGBMClassifier(n_estimators=1000)
+# 0.6428847951504623
+model = LGBMClassifier(n_estimators=1000, max_depth= 128, min_child_samples= 100, num_leaves= 64, subsample= 0.8)
+# 0.6506658526347923
 
 # model.fit(x_train, y_train)
-# preds = model.predict(x_test)
+evals = [(x_test, y_test)]
+model.fit(x_train, y_train, early_stopping_rounds=100, eval_metric="f1", eval_set=evals, verbose=True)
+
+preds = model.predict(x_test)
+pred_proba = model.predict_proba(x_test)[:, 1]
+# get_clf_eval(y_test, preds, pred_proba)
+
+
 
 
 # 파라미터 튜닝
 # GridSearchCV
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import make_scorer
+# f1 = make_scorer(f1_score, average='macro')
+# model = LGBMClassifier(n_estimators=200)
+
+# params = {'num_leaves': [32, 64],
+#           'max_depth': [128, 160],
+#           'min_child_samples': [60, 100],
+#           'subsample': [0.8, 1]
+#           }
+
+# gridcv = GridSearchCV(model, param_grid=params, cv=3, scoring=f1)
+# gridcv.fit(x_train, y_train, early_stopping_rounds=30, eval_metric="f1_micro", eval_set=[(x_train, y_train), (x_test, y_test)])
+
+# print('best -> ', gridcv.best_params_)
+
+# visualize
+# from lightgbm import plot_importance
+# import matplotlib.pyplot asplt
+
+# fig, ax = plt.subplots(figsize=(10, 12))
+# plot_importance(model, ax=ax)
 
 # 평가   -> F1 Score
-# from sklearn.metrics import f1_score
-# f1 = f1_score(y_test, preds)
-#
-# print(f1)
+from sklearn.metrics import f1_score
+f1 = f1_score(y_test, preds)
 
+print(f1)
 
-# 제출용
-model = MLPClassifier(hidden_layer_sizes=(100,), learning_rate_init=0.01, max_iter=300, random_state=11)
-model.fit(x, y)
-preds = model.predict(test)
 
 # # 저장
 # submission = pd.read_csv('sample_submission.csv')
