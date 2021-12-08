@@ -39,6 +39,8 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_
 ## id 제거
 x_train = x_train.drop(['id', 'contents_open_dt'], axis=1)
 x_test = x_test.drop(['id', 'contents_open_dt'], axis=1)
+train = train.drop(['id', 'contents_open_dt'], axis=1)
+test = test.drop(['id', 'contents_open_dt'], axis=1)
 
 # 결측치 제거
 ## null 피쳐 없음
@@ -75,34 +77,39 @@ from sklearn.neural_network import MLPClassifier
 # from xgboost import XGBClassifier
 
 # model = DecisionTreeClassifier(max_depth=60)
-# 0.5540630561659227
+# F1Score -> 0.5540630561659227
 
 # model = LogisticRegression()
-# 0.4513787932554173
+# F1Score -> 0.4513787932554173
 
 # model = RandomForestClassifier(n_estimators=300, max_depth=60, n_jobs=-1)
-# 0.6339364303178483
+# F1Score -> 0.6339364303178483
 
-# model = VotingClassifier( estimators=[('LR',lr_clf),('KNN',knn_clf)] , voting='soft' )
+rf_model = RandomForestClassifier(n_estimators=300, max_depth=60, n_jobs=-1)
+mlp_model = MLPClassifier(hidden_layer_sizes=(100,), learning_rate_init=0.01, max_iter=300, random_state=11)
+model = VotingClassifier(estimators=[('RF', rf_model), ('MLP', mlp_model)], voting='soft')
+# F1Score -> 0.6415912229553477
 
 # model = KNeighborsClassifier(n_neighbors=8)
-# 0.4790223398458784 -> 오래걸림
+# F1Score -> 0.4790223398458784 -> 오래걸림
 
 # model = GradientBoostingClassifier(n_estimators=100, learning_rate=0.1)
-# 0.6176210607225211
+# F1Score -> 0.6176210607225211
 
 # model = MLPClassifier(hidden_layer_sizes=(100,), learning_rate_init=0.01, max_iter=300, random_state=11)
-# 0.6675647695901467
+# F1Score -> 0.6675647695901467
 # model = MLPClassifier(hidden_layer_sizes=(60,), learning_rate_init=0.01, max_iter=300, random_state=11)
-# 0.6675647695901467
-model = MLPClassifier(hidden_layer_sizes=(60,), learning_rate_init=0.001, max_iter=300, random_state=11)
+# F1Score -> 0.6675647695901467
+# model = MLPClassifier(hidden_layer_sizes=(60,), learning_rate_init=0.001, max_iter=300, random_state=11)
+# F1Score -> 0.00011928192282459593
+# model = MLPClassifier(hidden_layer_sizes=(200,), learning_rate_init=0.01, max_iter=10, random_state=11)
 
 # model = SVC(C=100, gamma=1, random_state=11, probability=True)
 # -> 오래걸림
 # model = XGBClassifier(n_estimators=300, random_state=11)
 
-model.fit(x_train, y_train)
-preds = model.predict(x_test)
+# model.fit(x_train, y_train)
+# preds = model.predict(x_test)
 
 
 # 파라미터 튜닝
@@ -110,9 +117,15 @@ preds = model.predict(x_test)
 
 # 평가   -> F1 Score
 # from sklearn.metrics import f1_score
-f1 = f1_score(y_test, preds)
+# f1 = f1_score(y_test, preds)
+#
+# print(f1)
 
-print(f1)
+
+# 제출용
+model = MLPClassifier(hidden_layer_sizes=(100,), learning_rate_init=0.01, max_iter=300, random_state=11)
+model.fit(x, y)
+preds = model.predict(test)
 
 # # 저장
 # submission = pd.read_csv('sample_submission.csv')
