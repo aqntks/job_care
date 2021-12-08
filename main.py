@@ -1,7 +1,7 @@
 from sklearn.preprocessing import LabelEncoder
 from tqdm import tqdm
 import numpy as np
-from sklearn.ensemble import RandomForestClassifier
+
 
 from sklearn.metrics import f1_score
 
@@ -64,14 +64,49 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 
 # 모델
-model = RandomForestClassifier(n_estimators=300, max_depth=60, n_jobs=-1)
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import VotingClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.neural_network import MLPClassifier
+# from sklearn.svm import SVC
+# from xgboost import XGBClassifier
 
+# model = DecisionTreeClassifier(max_depth=60)
+# 0.5540630561659227
+
+# model = LogisticRegression()
+# 0.4513787932554173
+
+# model = RandomForestClassifier(n_estimators=300, max_depth=60, n_jobs=-1)
+# 0.6339364303178483
+
+# model = VotingClassifier( estimators=[('LR',lr_clf),('KNN',knn_clf)] , voting='soft' )
+
+# model = KNeighborsClassifier(n_neighbors=8)
+# 0.4790223398458784 -> 오래걸림
+
+# model = GradientBoostingClassifier(n_estimators=100, learning_rate=0.1)
+# 0.6176210607225211
+
+# model = MLPClassifier(hidden_layer_sizes=(100,), learning_rate_init=0.01, max_iter=300, random_state=11)
+# 0.6675647695901467
+# model = MLPClassifier(hidden_layer_sizes=(60,), learning_rate_init=0.01, max_iter=300, random_state=11)
+# 0.6675647695901467
+model = MLPClassifier(hidden_layer_sizes=(60,), learning_rate_init=0.001, max_iter=300, random_state=11)
+
+# model = SVC(C=100, gamma=1, random_state=11, probability=True)
+# -> 오래걸림
+# model = XGBClassifier(n_estimators=300, random_state=11)
 
 model.fit(x_train, y_train)
 preds = model.predict(x_test)
 
-# 파라미터 튜닝
 
+# 파라미터 튜닝
+# GridSearchCV
 
 # 평가   -> F1 Score
 # from sklearn.metrics import f1_score
@@ -83,10 +118,8 @@ print(f1)
 # submission = pd.read_csv('sample_submission.csv')
 # submission['target'] = preds
 #
-# submission.to_csv('rf_kfold.csv', index=False)
-
-
+# submission.to_csv('now.csv', index=False)
 #
-#
+
 
 
