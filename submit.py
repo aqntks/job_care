@@ -8,24 +8,26 @@ import pandas as pd
 import warnings
 from lightgbm import LGBMClassifier
 
-
+pd.set_option('display.max_columns', 1000)
 warnings.filterwarnings(action='ignore')
 
 
 train = pd.read_csv('train.csv')
 test = pd.read_csv('test.csv')
 
+x_train = train.iloc[:, :-1]
+y_train = train.iloc[:, -1]
 
-train['contents_open_dt'] = train.contents_open_dt.apply(pd.to_datetime)
-train['month'] = train.contents_open_dt.apply(lambda x : x.month)
+x_train['contents_open_dt'] = x_train.contents_open_dt.apply(pd.to_datetime)
+x_train['month'] = x_train.contents_open_dt.apply(lambda x : x.month)
 test['contents_open_dt'] = test.contents_open_dt.apply(pd.to_datetime)
 test['month'] = test.contents_open_dt.apply(lambda x : x.month)
 
-train = train.drop(['id', 'contents_open_dt', 'person_prefer_f', 'person_prefer_g'], axis=1)
+x_train = x_train.drop(['id', 'contents_open_dt', 'person_prefer_f', 'person_prefer_g'], axis=1)
 test = test.drop(['id', 'contents_open_dt', 'person_prefer_f', 'person_prefer_g'], axis=1)
 
-# train = pd.get_dummies(train, columns=['person_attribute_b', 'person_prefer_c'])
-# test = pd.get_dummies(test, columns=['person_attribute_b', 'person_prefer_c'])
+x_train = pd.get_dummies(x_train, columns=['person_attribute_b', 'person_prefer_c'])
+test = pd.get_dummies(test, columns=['person_attribute_b', 'person_prefer_c'])
 
 
 # model = MLPClassifier(hidden_layer_sizes=(30,), learning_rate_init=0.01, max_iter=10, random_state=11)
@@ -35,10 +37,8 @@ model = LGBMClassifier(boosting_type = 'gbdt', num_leaves = 31, max_depth=-1, le
                            subsample_freq = 0, colsample_bytree = 1.0, reg_alpha = 0.0, reg_lambda = 0.0,
                            random_state = None, n_jobs = - 1, importance_type = 'split')
 
-x = train.iloc[:, :-1]
-y = train.iloc[:, -1]
 
-model.fit(x,y)
+model.fit(x_train, y_train)
 preds = model.predict(test)
 
 
