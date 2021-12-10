@@ -24,8 +24,8 @@ test['month'] = test.contents_open_dt.apply(lambda x : x.month)
 train = train.drop(['id', 'contents_open_dt', 'person_prefer_f', 'person_prefer_g'], axis=1)
 test = test.drop(['id', 'contents_open_dt', 'person_prefer_f', 'person_prefer_g'], axis=1)
 
-train = pd.get_dummies(train, columns=['person_attribute_b', 'person_prefer_c'])
-test = pd.get_dummies(test, columns=['person_attribute_b', 'person_prefer_c'])
+# train = pd.get_dummies(train, columns=['person_attribute_b', 'person_prefer_c'])
+# test = pd.get_dummies(test, columns=['person_attribute_b', 'person_prefer_c'])
 
 
 # model = MLPClassifier(hidden_layer_sizes=(30,), learning_rate_init=0.01, max_iter=10, random_state=11)
@@ -45,4 +45,4 @@ preds = model.predict(test)
 submission = pd.read_csv('sample_submission.csv')
 submission['target'] = preds
 
-submission.to_csv('lightGBM_v2.csv', index=False)
+submission.to_csv('csv/lightGBM_v5.csv', index=False)
