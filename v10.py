@@ -18,16 +18,9 @@ x_test = pd.read_csv('test.csv')
 x_train = train.iloc[:, :-1]
 y_train = train.iloc[:, -1]
 
-# x_train['contents_open_dt'] = x_train.contents_open_dt.apply(pd.to_datetime)
-# x_train['month'] = x_train.contents_open_dt.apply(lambda x : x.month)
-# x_test['contents_open_dt'] = x_test.contents_open_dt.apply(pd.to_datetime)
-# x_test['month'] = x_test.contents_open_dt.apply(lambda x : x.month)
-
-
 ## id 제거
-x_train = x_train.drop(['id', 'contents_open_dt', 'person_prefer_f', 'person_prefer_g'], axis=1)
-x_test = x_test.drop(['id', 'contents_open_dt', 'person_prefer_f', 'person_prefer_g'], axis=1)
-
+x_train = x_train.drop(['id', 'contents_open_dt', 'person_prefer_f', 'person_prefer_g', 'person_rn', 'contents_rn'], axis=1)
+x_test = x_test.drop(['id', 'contents_open_dt', 'person_prefer_f', 'person_prefer_g', 'person_rn', 'contents_rn'], axis=1)
 
 x_train = pd.get_dummies(x_train, columns=['person_attribute_b', 'person_prefer_c'])
 x_test = pd.get_dummies(x_test, columns=['person_attribute_b', 'person_prefer_c'])
@@ -35,7 +28,7 @@ x_test = pd.get_dummies(x_test, columns=['person_attribute_b', 'person_prefer_c'
 
 # model = MLPClassifier(hidden_layer_sizes=(30,), learning_rate_init=0.01, max_iter=10, random_state=11)
 model = LGBMClassifier(boosting_type = 'gbdt', num_leaves = 31, max_depth=-1, learning_rate = 0.1,
-                           n_estimators = 950, subsample_for_bin = 100000, objective = None, class_weight = 'balanced',
+                           n_estimators = 2287, subsample_for_bin = 100000, objective = None, class_weight = 'balanced',
                            min_split_gain = 0.0, min_child_weight = 0.001, min_child_samples = 150, subsample = 1.0,
                            subsample_freq = 0, colsample_bytree = 1.0, reg_alpha = 0.0, reg_lambda = 0.0,
                            random_state = None, n_jobs = - 1, importance_type = 'split')
@@ -48,4 +41,4 @@ preds = model.predict(x_test)
 submission = pd.read_csv('sample_submission.csv')
 submission['target'] = preds
 
-submission.to_csv('csv/lightGBM_v6.csv', index=False)
+submission.to_csv('csv/lightGBM_v10.csv', index=False)

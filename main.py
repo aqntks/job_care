@@ -66,13 +66,13 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_
 #                         'person_attribute_a_1', 'person_attribute_a_1'], axis=1)
 
 # 날짜 처리
-x_train['contents_open_dt'] = x_train.contents_open_dt.apply(pd.to_datetime)
-x_train['month'] = x_train.contents_open_dt.apply(lambda x : x.month)
-x_test['contents_open_dt'] = x_test.contents_open_dt.apply(pd.to_datetime)
-x_test['month'] = x_test.contents_open_dt.apply(lambda x : x.month)
+# x_train['contents_open_dt'] = x_train.contents_open_dt.apply(pd.to_datetime)
+# x_train['month'] = x_train.contents_open_dt.apply(lambda x : x.month)
+# x_test['contents_open_dt'] = x_test.contents_open_dt.apply(pd.to_datetime)
+# x_test['month'] = x_test.contents_open_dt.apply(lambda x : x.month)
 
-x_train = x_train.drop(['id', 'contents_open_dt', 'person_prefer_f', 'person_prefer_g'], axis=1)
-x_test = x_test.drop(['id', 'contents_open_dt', 'person_prefer_f', 'person_prefer_g'], axis=1)
+x_train = x_train.drop(['id', 'contents_open_dt', 'person_prefer_f', 'person_prefer_g', 'person_rn', 'contents_rn'], axis=1)
+x_test = x_test.drop(['id', 'contents_open_dt', 'person_prefer_f', 'person_prefer_g', 'person_rn', 'contents_rn'], axis=1)
 
 # 결측치 제거
 ## null 피쳐 없음
@@ -84,9 +84,13 @@ x_test = x_test.drop(['id', 'contents_open_dt', 'person_prefer_f', 'person_prefe
 # 인코딩
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
-
-x_train = pd.get_dummies(x_train, columns=['person_attribute_b', 'person_prefer_c'])
-x_test = pd.get_dummies(x_test, columns=['person_attribute_b', 'person_prefer_c'])
+# 6507
+columns = ['person_attribute_b', 'person_prefer_c']
+# columns = ['person_attribute_b', 'person_prefer_c', 'person_prefer_e', 'contents_attribute_i',
+#            'contents_attribute_a', 'contents_attribute_j_1', 'contents_attribute_j', 'contents_attribute_c',
+#            'contents_attribute_k', 'contents_attribute_m', 'contents_attribute_e']
+x_train = pd.get_dummies(x_train, columns=columns)
+x_test = pd.get_dummies(x_test, columns=columns)
 
 # 정규화
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
@@ -153,11 +157,11 @@ if mode:
     # 0.6506658526347923
 
     model = LGBMClassifier(boosting_type = 'gbdt', num_leaves = 31, max_depth=-1, learning_rate = 0.1,
-                           n_estimators = 950, subsample_for_bin = 100000, objective = None, class_weight = 'balanced',
+                           n_estimators = 40000, subsample_for_bin = 100000, objective = None, class_weight = 'balanced',
                            min_split_gain = 0.0, min_child_weight = 0.001, min_child_samples = 150, subsample = 1.0,
                            subsample_freq = 0, colsample_bytree = 1.0, reg_alpha = 0.0, reg_lambda = 0.0,
                            random_state = None, n_jobs = - 1, importance_type = 'split')
-
+    # 0.6518
     # model = LGBMClassifier(n_estimators=500, max_depth=128, min_child_samples=100, num_leaves=64, subsample=0.8)
     # 0.6493146786815271
 
